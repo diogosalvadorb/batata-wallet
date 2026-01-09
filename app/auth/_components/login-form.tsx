@@ -35,7 +35,6 @@ export default function LoginForm() {
       return;
     }
     if (data) {
-      toast.success("Login realizado com sucesso!");
       router.refresh();
     }
   };

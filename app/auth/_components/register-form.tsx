@@ -35,7 +35,6 @@ export default function RegisterForm() {
       return;
     }
     if (data) {
-      toast.success("Login realizado com sucesso!");
       router.refresh();
     }
   };
