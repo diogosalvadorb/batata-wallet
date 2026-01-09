@@ -4,8 +4,19 @@ import Link from "next/link"
 import LoginForm from "./_components/login-form"
 import RegisterForm from "./_components/register-form"
 import { Button } from "@/components/ui/button"
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
+import { redirect } from "next/navigation"
 
-export default function Auth() {
+export default async function Auth() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (session?.user) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="min-h-screen flex justify-center bg-background pt-8 md:pt-16">
       <div className="w-full max-w-md px-4">
