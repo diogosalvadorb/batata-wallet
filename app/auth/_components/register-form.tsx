@@ -12,6 +12,8 @@ import {
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import { register } from "@/actions/auth/register";
+import { useAction } from "next-safe-action/hooks";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,7 +23,31 @@ import { toast } from "sonner";
 
 export default function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const router = useRouter();
+
+  const { execute, status } = useAction(register, {
+    onSuccess: (result) => {
+      if (result?.data?.message) {
+        toast.success(result.data.message);
+      } else {
+        toast.success("Conta criada com sucesso!");
+      }
+      // conta criada com sucesso porem não esta sendo redirecionado para a dashboard
+      router.push("/dashboard");
+      router.refresh();
+    },
+    onError: ({ error }) => {
+      if (error.serverError) {
+        toast.error(error.serverError);
+      } 
+    },
+  });
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
@@ -37,6 +63,18 @@ export default function RegisterForm() {
     if (data) {
       router.refresh();
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    execute(formData);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   return (
@@ -68,12 +106,19 @@ export default function RegisterForm() {
           </div>
         </div>
 
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Field>
               <FieldLabel>Nome</FieldLabel>
               <FieldContent>
-                <Input type="text" placeholder="Nome completo" />
+                <Input
+                  type="text"
+                  name="name"
+                  placeholder="Nome completo"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
               </FieldContent>
             </Field>
           </div>
@@ -81,7 +126,14 @@ export default function RegisterForm() {
             <Field>
               <FieldLabel>Email</FieldLabel>
               <FieldContent>
-                <Input type="email" placeholder="seu@email.com" />
+                <Input
+                  type="email"
+                  name="email"
+                  placeholder="seu@email.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
               </FieldContent>
             </Field>
           </div>
@@ -89,7 +141,14 @@ export default function RegisterForm() {
             <Field>
               <FieldLabel>Senha</FieldLabel>
               <FieldContent>
-                <Input type="password" placeholder="********" />
+                <Input
+                  type="password"
+                  name="password"
+                  placeholder="********"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
               </FieldContent>
             </Field>
           </div>
@@ -97,12 +156,23 @@ export default function RegisterForm() {
             <Field>
               <FieldLabel>Confirmar senha</FieldLabel>
               <FieldContent>
-                <Input type="password" placeholder="********" />
+                <Input
+                  type="password"
+                  name="confirmPassword"
+                  placeholder="********"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
               </FieldContent>
             </Field>
           </div>
-          <Button type="submit" className="w-full">
-            Criar conta
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={status === "executing" || isLoading}
+          >
+            {status === "executing" ? "Criando conta..." : "Criar conta"}
           </Button>
         </form>
       </CardContent>
