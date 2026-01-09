@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,11 +11,35 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
+import { toast } from "sonner";
 
 export default function RegisterForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    const { data, error } = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/dashboard",
+    });
+    if (error) {
+      toast.error(error.message);
+      setIsLoading(false);
+      return;
+    }
+    if (data) {
+      toast.success("Login realizado com sucesso!");
+      router.refresh();
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -24,9 +50,14 @@ export default function RegisterForm() {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <Button className="w-full" variant="outline">
+        <Button
+          className="w-full"
+          variant="outline"
+          onClick={handleGoogleLogin}
+          disabled={isLoading}
+        >
           <FcGoogle className="mr-2 h-4 w-4" />
-          Continuar com Google
+          {isLoading ? "Carregando..." : "Continuar com Google"}
         </Button>
 
         <div className="relative">
