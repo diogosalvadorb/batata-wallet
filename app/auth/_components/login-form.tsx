@@ -12,6 +12,8 @@ import {
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import { login } from "@/actions/auth/login";
+import { useAction } from "next-safe-action/hooks";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,7 +23,27 @@ import { toast } from "sonner";
 
 export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const router = useRouter();
+
+  const { execute, status } = useAction(login, {
+    onSuccess: async (result) => {
+      if (result?.data?.message) {
+        toast.success(result.data.message);
+      }
+
+      router.push("/dashboard");
+      router.refresh();
+    },
+    onError: ({ error }) => {
+      if (error.serverError) {
+        toast.error(error.serverError);
+      }
+    },
+  });
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
@@ -37,6 +59,18 @@ export default function LoginForm() {
     if (data) {
       router.refresh();
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    execute(formData);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   return (
@@ -66,12 +100,19 @@ export default function LoginForm() {
           </div>
         </div>
 
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Field>
               <FieldLabel>Email</FieldLabel>
               <FieldContent>
-                <Input type="email" placeholder="seu@email.com" />
+                <Input
+                  type="email"
+                  name="email"
+                  placeholder="seu@email.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
               </FieldContent>
             </Field>
           </div>
@@ -79,12 +120,23 @@ export default function LoginForm() {
             <Field>
               <FieldLabel>Senha</FieldLabel>
               <FieldContent>
-              <Input type="password" placeholder="********" />
+                <Input
+                  type="password"
+                  name="password"
+                  placeholder="********"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
               </FieldContent>
             </Field>
           </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Entrando..." : "Entrar"}
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={status === "executing" || isLoading}
+          >
+            {status === "executing" ? "Entrando..." : "Entrar"}
           </Button>
         </form>
       </CardContent>

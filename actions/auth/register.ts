@@ -5,6 +5,7 @@ import { actionClient } from "@/lib/action-client";
 import { returnValidationErrors } from "next-safe-action";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 // Schema de validação para o registro
 const registerSchema = z
@@ -44,7 +45,7 @@ export const register = actionClient
           email,
           password,
         },
-        headers: new Headers(),
+        headers: await headers(),
       });
 
       if (!result) {

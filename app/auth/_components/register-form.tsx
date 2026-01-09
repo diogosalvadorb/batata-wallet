@@ -35,17 +35,15 @@ export default function RegisterForm() {
     onSuccess: (result) => {
       if (result?.data?.message) {
         toast.success(result.data.message);
-      } else {
-        toast.success("Conta criada com sucesso!");
       }
-      // conta criada com sucesso porem não esta sendo redirecionado para a dashboard
+
       router.push("/dashboard");
       router.refresh();
     },
     onError: ({ error }) => {
       if (error.serverError) {
         toast.error(error.serverError);
-      } 
+      }
     },
   });
 
