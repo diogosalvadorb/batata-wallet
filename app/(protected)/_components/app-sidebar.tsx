@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  LayoutDashboard,
-  LogOut,
-  Wallet,
-  ChevronsUpDown,
-} from "lucide-react";
+import { LayoutDashboard, LogOut, Wallet, ChevronsUpDown } from "lucide-react";
 
 import {
   Sidebar,
@@ -84,7 +79,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton variant="primary" asChild>
                     <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
@@ -100,7 +95,7 @@ export function AppSidebar() {
         <SidebarMenuItem>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <SidebarMenuButton>
+              <SidebarMenuButton size="lg" variant="white">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
                     src={user?.image || undefined}
@@ -147,7 +142,11 @@ export function AppSidebar() {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleSignOut}>
+              <DropdownMenuItem
+                onClick={handleSignOut}
+                className="cursor-pointer"
+                variant="primary"
+              >
                 <LogOut />
                 Sair
               </DropdownMenuItem>

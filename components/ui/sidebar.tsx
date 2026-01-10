@@ -481,6 +481,10 @@ const sidebarMenuButtonVariants = cva(
         default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         outline:
           "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
+        primary:
+          "text-primary hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary focus-visible:bg-primary/10 dark:focus-visible:bg-primary/20 focus-visible:text-primary active:bg-primary/10 dark:active:bg-primary/20 active:text-primary data-[active=true]:bg-primary/10 dark:data-[active=true]:bg-primary/20 data-[active=true]:text-primary data-[state=open]:hover:bg-primary/10 dark:data-[state=open]:hover:bg-primary/20 data-[state=open]:hover:text-primary [&>svg]:text-primary",
+        white:
+          "text-white hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-white focus-visible:bg-primary/10 dark:focus-visible:bg-primary/20 focus-visible:text-white active:bg-primary/10 dark:active:bg-primary/20 active:text-white data-[active=true]:bg-primary/10 dark:data-[active=true]:bg-primary/20 data-[active=true]:text-white data-[state=open]:hover:bg-primary/10 dark:data-[state=open]:hover:bg-primary/20 data-[state=open]:hover:text-white [&>svg]:text-white",
       },
       size: {
         default: "h-8 text-sm",
