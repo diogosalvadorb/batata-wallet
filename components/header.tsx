@@ -9,7 +9,7 @@ export default function Header() {
           <span className="text-2xl font-bold">Batata Wallet</span>
         </div>
 
-        <Link href="/auth">
+        <Link href="/authentication">
           <Button variant="primary">
             Entrar
           </Button>

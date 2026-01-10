@@ -1,9 +1,8 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { SignOutButton } from "./_components/sign-out-button";
 
-export default async function Dashboard() {
+export default async function DashboardPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -16,7 +15,6 @@ export default async function Dashboard() {
     <div>
       <h1>Dashboard</h1>
       <p>Bem-vindo, {session.user.name || session.user.email}!</p>
-      <SignOutButton />
     </div>
   );
 }
