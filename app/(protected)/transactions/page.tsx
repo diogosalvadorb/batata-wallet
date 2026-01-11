@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { transactionsColumns } from "./_columns";
 import { DataTable } from "../_components/data-table";
 import { getTransactions } from "@/data/transactions";
+import { Transaction } from "@/types/transaction";
 
 export default async function TransactionsPage() {
   const session = await auth.api.getSession({
