@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PencilIcon, Trash2 } from "lucide-react";
 import { TRANSACTION_PAYMENT_METHOD_LABELS, TRANSACTIONS_CATEGORY_LABELS } from "@/app/_constants/transactions";
+import { EditTransactionButton } from "../_components/edit-transaction-button";
 
 
 
@@ -58,12 +59,10 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "actions",
     header: "Ações",
-    cell: () => {
+    cell: ({ row }) => {
       return (
         <div className="flex gap-2">
-          <Button variant="ghost" size="icon" className="text-muted-foreground">
-            <PencilIcon className="h-4 w-4" />
-          </Button>
+          <EditTransactionButton transaction={row.original} />
           <Button variant="ghost" size="icon">
             <Trash2 className="h-4 w-4" />
           </Button>
