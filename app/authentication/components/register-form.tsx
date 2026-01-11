@@ -9,11 +9,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { register } from "@/actions/auth/register";
 import { useAction } from "next-safe-action/hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import z from "zod";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,15 +31,33 @@ import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 
+const formSchema = z
+  .object({
+    name: z.string().min(2, "Nome deve ter pelo menos 5 caracteres"),
+    email: z.string().email("Email inválido"),
+    password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
+    confirmPassword: z.string().min(1, "Confirmação de senha é obrigatória"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "As senhas não coincidem",
+    path: ["confirmPassword"],
+  });
+
+type FormSchema = z.infer<typeof formSchema>;
+
 export default function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
   const router = useRouter();
+
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
   const { execute, status } = useAction(register, {
     onSuccess: (result) => {
@@ -63,16 +91,8 @@ export default function RegisterForm() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    execute(formData);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const onSubmit = (data: FormSchema) => {
+    execute(data);
   };
 
   return (
@@ -104,75 +124,73 @@ export default function RegisterForm() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Field>
-              <FieldLabel>Nome</FieldLabel>
-              <FieldContent>
-                <Input
-                  type="text"
-                  name="name"
-                  placeholder="Nome completo"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </FieldContent>
-            </Field>
-          </div>
-          <div className="space-y-2">
-            <Field>
-              <FieldLabel>Email</FieldLabel>
-              <FieldContent>
-                <Input
-                  type="email"
-                  name="email"
-                  placeholder="seu@email.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </FieldContent>
-            </Field>
-          </div>
-          <div className="space-y-2">
-            <Field>
-              <FieldLabel>Senha</FieldLabel>
-              <FieldContent>
-                <Input
-                  type="password"
-                  name="password"
-                  placeholder="********"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-              </FieldContent>
-            </Field>
-          </div>
-          <div className="space-y-2">
-            <Field>
-              <FieldLabel>Confirmar senha</FieldLabel>
-              <FieldContent>
-                <Input
-                  type="password"
-                  name="confirmPassword"
-                  placeholder="********"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                />
-              </FieldContent>
-            </Field>
-          </div>
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={status === "executing" || isLoading}
-          >
-            {status === "executing" ? "Criando conta..." : "Criar conta"}
-          </Button>
-        </form>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nome</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="Nome completo" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="seu@email.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Senha</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="********" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirmar senha</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="********" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={status === "executing" || isLoading}
+            >
+              {status === "executing" ? "Criando conta..." : "Criar conta"}
+            </Button>
+          </form>
+        </Form>
       </CardContent>
 
       <CardFooter className="flex justify-center">
