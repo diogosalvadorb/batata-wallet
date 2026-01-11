@@ -5,7 +5,7 @@ import { transactionsColumns } from "./_columns";
 import { DataTable } from "../_components/data-table";
 import { getTransactions } from "@/data/transactions";
 import { Transaction } from "@/types/transaction";
-import { AddTransactionButton } from "../_components/add-transaction-button";
+import { AddTransactionButton } from "../_components/create-transaction-button";
 
 export default async function TransactionsPage() {
   const session = await auth.api.getSession({

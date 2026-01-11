@@ -44,14 +44,16 @@ import {
   TRANSACTION_PAYMENT_METHOD_OPTIONS,
 } from "@/app/_constants/transactions";
 import { DatePicker } from "@/components/ui/date-picker";
+import { createTransaction } from "@/actions/create-transaction";
+import { useAction } from "next-safe-action/hooks";
+import { toast } from "sonner";
+import { useState } from "react";
 
 const formSchema = z.object({
   name: z.string().trim().min(1, {
     message: "O nome é obrigatório.",
   }),
-  amount: z.string().trim().min(1, {
-    message: "O nome é obrigatório.",
-  }),
+  amount: z.number({ error: "O valor é obrigatório."  }).positive({ message: "O valor deve ser positivo." }),
   type: z.nativeEnum(TransactionType),
   category: z.nativeEnum(TransactionCategory),
   paymentMethod: z.nativeEnum(TransactionPaymentMethod),
@@ -61,11 +63,17 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 export function AddTransactionButton() {
+  const[dialogIsOpen, setDialogIsOpen] = useState(false);
+  const {
+    executeAsync: executeCreateTransaction,
+    isPending: isCreatingTransaction,
+  } = useAction(createTransaction);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      amount: "",
+      amount: 0,
       type: TransactionType.DEPOSIT,
       category: TransactionCategory.OTHER,
       paymentMethod: TransactionPaymentMethod.OTHER,
@@ -73,12 +81,28 @@ export function AddTransactionButton() {
     },
   });
 
-  const onSubmit = (data: FormSchema) => {
-    console.log(data);
+  const onSubmit = async (data: FormSchema) => {
+    const result = await executeCreateTransaction(data);
+    if (result.validationErrors) {
+      return toast.error(result.validationErrors._errors?.[0]);
+    }
+    if (result.serverError) {
+      return toast.error("Erro ao criar transação");
+    }
+    setDialogIsOpen(false);
+    form.reset();
+    toast.success("Transação criada com sucesso");
   };
 
   return (
-    <Dialog onOpenChange={(open) => (!open ? form.reset() : undefined)}>
+    <Dialog 
+    open={dialogIsOpen}
+    onOpenChange={(open) => {
+      setDialogIsOpen(open);
+      if (!open) {
+        form.reset();
+      }
+    }}>
       <DialogTrigger>
         <Button className="rounded-full font-bold">
           Adicionar Transação
@@ -115,7 +139,15 @@ export function AddTransactionButton() {
                 <FormItem>
                   <FormLabel>Valor</FormLabel>
                   <FormControl>
-                    <MoneyInput placeholder="Digite o valor..." {...field} />
+                  <MoneyInput
+                      placeholder="Digite o valor..."
+                      value={field.value}
+                      onValueChange={({ floatValue }) =>
+                        field.onChange(floatValue)
+                      }
+                      onBlur={field.onBlur}
+                      disabled={field.disabled}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
