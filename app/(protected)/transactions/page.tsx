@@ -23,7 +23,7 @@ export default async function TransactionsPage() {
       {/* Titulo */}
       <div className="flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold">Transações</h1>
-        <Button className="gap-2 rounded-full">
+        <Button className="font-bold rounded-full">
           Adicionar Transação
           <ArrowDownUpIcon className="size-4" />
         </Button>

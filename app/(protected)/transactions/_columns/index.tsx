@@ -2,7 +2,39 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import TransactionTypeBadge from "../_components/type-bidge";
-import { Transaction } from "@/types/transaction";
+import {
+  Transaction,
+  TransactionCategory,
+  TransactionPaymentMethod,
+} from "@/types/transaction";
+import { Button } from "@/components/ui/button";
+import { PencilIcon, Trash2 } from "lucide-react";
+
+export const TRANSACTIONS_CATEGORY_LABELS: Record<TransactionCategory, string> =
+  {
+    [TransactionCategory.HOUSING]: "Moradia",
+    [TransactionCategory.TRANSPORTATION]: "Transporte",
+    [TransactionCategory.FOOD]: "Alimentação",
+    [TransactionCategory.ENTERTAINMENT]: "Entretenimento",
+    [TransactionCategory.HEALTH]: "Saúde",
+    [TransactionCategory.UTILITY]: "Utilidade",
+    [TransactionCategory.SALARY]: "Salário",
+    [TransactionCategory.EDUCATION]: "Educação",
+    [TransactionCategory.OTHER]: "Outro",
+  };
+
+export const TRANSACTION_PAYMENT_METHOD_LABELS: Record<
+  TransactionPaymentMethod,
+  string
+> = {
+  [TransactionPaymentMethod.CREDIT_CARD]: "Cartão de Crédito",
+  [TransactionPaymentMethod.DEBIT_CARD]: "Cartão de Débito",
+  [TransactionPaymentMethod.BANK_TRANSFER]: "Transferência Bancária",
+  [TransactionPaymentMethod.BANK_SLIP]: "Boleto Bancário",
+  [TransactionPaymentMethod.CASH]: "Dinheiro",
+  [TransactionPaymentMethod.PIX]: "PIX",
+  [TransactionPaymentMethod.OTHER]: "Outro",
+};
 
 export const transactionsColumns: ColumnDef<Transaction>[] = [
   {
@@ -19,21 +51,47 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "category",
     header: "Categoria",
+    cell: ({ row }) => TRANSACTIONS_CATEGORY_LABELS[row.original.category],
   },
   {
     accessorKey: "paymentMethod",
     header: "Método de pagamento",
+    cell: ({ row }) =>
+      TRANSACTION_PAYMENT_METHOD_LABELS[row.original.paymentMethod],
   },
   {
     accessorKey: "date",
     header: "Data",
+    cell: ({ row }) =>
+      row.original.date.toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      }),
   },
   {
     accessorKey: "amount",
     header: "Valor",
+    cell: ({ row: { original: transaction } }) =>
+      new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(transaction.amount),
   },
   {
     accessorKey: "actions",
-    header: "",
+    header: "Ações",
+    cell: () => {
+      return (
+        <div className="flex gap-2">
+          <Button variant="ghost" size="icon" className="text-muted-foreground">
+            <PencilIcon className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon">
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
   },
 ];
