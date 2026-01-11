@@ -9,32 +9,9 @@ import {
 } from "@/types/transaction";
 import { Button } from "@/components/ui/button";
 import { PencilIcon, Trash2 } from "lucide-react";
+import { TRANSACTION_PAYMENT_METHOD_LABELS, TRANSACTIONS_CATEGORY_LABELS } from "@/app/_constants/transactions";
 
-export const TRANSACTIONS_CATEGORY_LABELS: Record<TransactionCategory, string> =
-  {
-    [TransactionCategory.HOUSING]: "Moradia",
-    [TransactionCategory.TRANSPORTATION]: "Transporte",
-    [TransactionCategory.FOOD]: "Alimentação",
-    [TransactionCategory.ENTERTAINMENT]: "Entretenimento",
-    [TransactionCategory.HEALTH]: "Saúde",
-    [TransactionCategory.UTILITY]: "Utilidade",
-    [TransactionCategory.SALARY]: "Salário",
-    [TransactionCategory.EDUCATION]: "Educação",
-    [TransactionCategory.OTHER]: "Outro",
-  };
 
-export const TRANSACTION_PAYMENT_METHOD_LABELS: Record<
-  TransactionPaymentMethod,
-  string
-> = {
-  [TransactionPaymentMethod.CREDIT_CARD]: "Cartão de Crédito",
-  [TransactionPaymentMethod.DEBIT_CARD]: "Cartão de Débito",
-  [TransactionPaymentMethod.BANK_TRANSFER]: "Transferência Bancária",
-  [TransactionPaymentMethod.BANK_SLIP]: "Boleto Bancário",
-  [TransactionPaymentMethod.CASH]: "Dinheiro",
-  [TransactionPaymentMethod.PIX]: "PIX",
-  [TransactionPaymentMethod.OTHER]: "Outro",
-};
 
 export const transactionsColumns: ColumnDef<Transaction>[] = [
   {
