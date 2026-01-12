@@ -1,10 +1,19 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { Transaction, TransactionType } from "@/types/transaction";
-import { TransactionPercentage } from "@/types/transaction-percentage";
+import {
+  Transaction,
+  TransactionCategory,
+  TransactionType,
+} from "@/types/transaction";
+import {
+  TotalExpensePerCategory,
+  TransactionPercentage,
+} from "@/types/transaction-percentage";
 
-export const getTransactions = async(userId: string): Promise<Transaction[]> => {
+export const getTransactions = async (
+  userId: string,
+): Promise<Transaction[]> => {
   const transactions = await prisma.transaction.findMany({
     where: {
       userId,
@@ -58,7 +67,8 @@ export const getDashBoardData = async (month: string, userId: string) => {
 
   const balance = depositsTotal - investmentsTotal - expensesTotal;
   const transactionsTotal = Number(
-    (await prisma.transaction.aggregate({
+    (
+      await prisma.transaction.aggregate({
         where,
         _sum: { amount: true },
       })
@@ -77,11 +87,29 @@ export const getDashBoardData = async (month: string, userId: string) => {
     ),
   };
 
+  const totalExpensePerCategory: TotalExpensePerCategory[]  = (
+    await prisma.transaction.groupBy({
+      by: ["category"],
+      where: {
+        ...where,
+        type: TransactionType.EXPENSE,
+      },
+      _sum: { amount: true },
+    })
+  ).map((item) => ({
+    category: item.category as TransactionCategory,
+    totalAmount: Number(item._sum.amount || 0),
+    percentageOfTotal: Math.round(
+      (Number(item._sum.amount || 0) / Number(expensesTotal)) * 100,
+    ),
+  }));
+
   return {
     balance,
     depositsTotal,
     investmentsTotal,
     expensesTotal,
     typesPercentage,
+    totalExpensePerCategory
   };
 };

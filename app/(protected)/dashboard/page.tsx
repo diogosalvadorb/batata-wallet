@@ -6,6 +6,7 @@ import TimeSelect from "./_components/time-select";
 import { isMatch } from "date-fns";
 import { TransactionChart } from "./_components/transaction-chart";
 import { getDashBoardData } from "@/data/transactions";
+import ExpensesPerCategory from "./_components/expenses-per-category";
 
 interface DashboardPageProps {
   searchParams: Promise<{
@@ -38,11 +39,14 @@ export default async function DashboardPage({
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <TimeSelect />
       </div>
-      <div className="grid grid-cols-[2fr,1fr] gap-6 max-w-[1280px]">
+      <div className="grid max-w-[1280px] grid-cols-[2fr,1fr] gap-6">
         <div className="flex flex-col gap-6">
           <SummaryCards month={currentMonth} {...dashboard} />
           <div className="grid grid-cols-3 gap-6">
             <TransactionChart {...dashboard} />
+            <ExpensesPerCategory
+              totalExpensePerCategory={dashboard.totalExpensePerCategory}
+            />
           </div>
         </div>
       </div>
