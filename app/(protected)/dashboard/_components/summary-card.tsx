@@ -11,7 +11,7 @@ interface SummaryCardProps {
 
 export default function SummaryCard({ icon, title, amount, size = "small" }: SummaryCardProps) {
   return (
-    <Card>
+    <Card className={size === "large" ? "bg-white/15" : ""}>
       <CardHeader className="flex flex-row items-center gap-4">
         {icon}
         <p
@@ -34,5 +34,4 @@ export default function SummaryCard({ icon, title, amount, size = "small" }: Sum
       </CardContent>
     </Card>
   );
-};
-
+}

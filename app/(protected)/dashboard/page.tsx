@@ -33,7 +33,11 @@ export default async function DashboardPage({ searchParams,}: DashboardPageProps
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <TimeSelect />
       </div>
+
+      <div className="grid grid-cols-[2fr_1fr]">
+
       <SummaryCards month={currentMonth} />
+      </div>
     </div>
   );
 }
