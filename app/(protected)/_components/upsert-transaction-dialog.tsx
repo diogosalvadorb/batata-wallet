@@ -177,7 +177,7 @@ export function UpsertTransactionDialog({
                 <FormItem>
                   <FormLabel>Nome</FormLabel>
                   <FormControl>
-                    <Input placeholder="Digite o nome da trasação" {...field} />
+                    <Input placeholder="Digite o nome da trasação" {...field} autoFocus={true}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
