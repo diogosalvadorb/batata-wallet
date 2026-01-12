@@ -104,12 +104,26 @@ export const getDashBoardData = async (month: string, userId: string) => {
     ),
   }));
 
+  const lastTransactions = await prisma.transaction.findMany({
+    where: {
+      userId,
+    },
+    orderBy: {
+      date: "desc",
+    },
+    take: 10,
+  });
+
   return {
     balance,
     depositsTotal,
     investmentsTotal,
     expensesTotal,
     typesPercentage,
-    totalExpensePerCategory
+    totalExpensePerCategory,
+    lastTransactions: lastTransactions.map((transaction) => ({
+      ...transaction,
+      amount: Number(transaction.amount),
+    })),
   };
 };
