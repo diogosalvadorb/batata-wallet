@@ -7,12 +7,12 @@ import {
   TransactionCategory,
   TransactionPaymentMethod,
 } from "@/types/transaction";
-import { Button } from "@/components/ui/button";
-import { PencilIcon, Trash2 } from "lucide-react";
-import { TRANSACTION_PAYMENT_METHOD_LABELS, TRANSACTIONS_CATEGORY_LABELS } from "@/app/_constants/transactions";
+import {
+  TRANSACTION_PAYMENT_METHOD_LABELS,
+  TRANSACTIONS_CATEGORY_LABELS,
+} from "@/app/_constants/transactions";
 import { EditTransactionButton } from "../_components/edit-transaction-button";
-
-
+import { DeleteTransactionButton } from "../_components/delete-transaction-button";
 
 export const transactionsColumns: ColumnDef<Transaction>[] = [
   {
@@ -63,9 +63,7 @@ export const transactionsColumns: ColumnDef<Transaction>[] = [
       return (
         <div className="flex gap-2">
           <EditTransactionButton transaction={row.original} />
-          <Button variant="ghost" size="icon">
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          <DeleteTransactionButton transaction={row.original} />
         </div>
       );
     },
