@@ -15,7 +15,7 @@ export default async function TransactionsPage() {
     redirect("/authentication");
   }
 
-  const transactions = await getTransactions();
+  const transactions = await getTransactions(session.user.id);
 
   return (
     <div className="space-y-6 p-6">

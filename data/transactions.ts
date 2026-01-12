@@ -4,14 +4,18 @@ import { prisma } from "@/lib/prisma";
 import { Transaction, TransactionType } from "@/types/transaction";
 import { TransactionPercentage } from "@/types/transaction-percentage";
 
-export async function getTransactions(): Promise<Transaction[]> {
-  const transactions = await prisma.transaction.findMany({});
+export const getTransactions = async(userId: string): Promise<Transaction[]> => {
+  const transactions = await prisma.transaction.findMany({
+    where: {
+      userId,
+    },
+  });
 
   return transactions.map((transaction) => ({
     ...transaction,
     amount: Number(transaction.amount),
   }));
-}
+};
 
 export const getDashBoardData = async (month: string, userId: string) => {
   const year = new Date().getFullYear();
@@ -55,9 +59,9 @@ export const getDashBoardData = async (month: string, userId: string) => {
   const balance = depositsTotal - investmentsTotal - expensesTotal;
   const transactionsTotal = Number(
     (await prisma.transaction.aggregate({
-      where,
-      _sum: { amount: true },
-    })
+        where,
+        _sum: { amount: true },
+      })
     )?._sum?.amount || 0,
   );
 
