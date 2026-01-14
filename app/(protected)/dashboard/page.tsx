@@ -9,6 +9,7 @@ import { getDashBoardData } from "@/data/transactions";
 import ExpensesPerCategory from "./_components/expenses-per-category";
 import LastTransactions from "./_components/last-transactions";
 import { Transaction } from "@/types/transaction";
+import AiReportButton from "./_components/ai-report-button";
 
 interface DashboardPageProps {
   searchParams: Promise<{ month?: string; }>;
@@ -40,7 +41,10 @@ export default async function DashboardPage({
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <div className="flex items-center gap-3">
-          <TimeSelect />
+         <div className="flex items-center gap-3">
+         <AiReportButton  month={currentMonth} />
+         <TimeSelect />
+         </div>
         </div>
       </div>
 

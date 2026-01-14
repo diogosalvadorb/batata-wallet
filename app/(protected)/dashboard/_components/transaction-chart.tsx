@@ -1,27 +1,24 @@
-"use client"
+"use client";
 
-import { Pie, PieChart } from "recharts"
+import { Pie, PieChart } from "recharts";
 
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { TransactionType } from "@/types/transaction"
-import { TransactionPercentage } from "@/types/transaction-percentage"
-import PercentageItem from "./percentage-item"
-import { PiggyBankIcon, TrendingDownIcon, TrendingUpIcon } from "lucide-react"
+} from "@/components/ui/chart";
+import { TransactionType } from "@/types/transaction";
+import { TransactionPercentage } from "@/types/transaction-percentage";
+import PercentageItem from "./percentage-item";
+import { PiggyBankIcon, TrendingDownIcon, TrendingUpIcon } from "lucide-react";
 
 const chartConfig = {
-  [TransactionType.DEPOSIT]: { label: "Depósito", color:"#55B02E" },
-  [TransactionType.EXPENSE]: { label: "Despesa", color:"E93030" },
+  [TransactionType.DEPOSIT]: { label: "Depósito", color: "#55B02E" },
+  [TransactionType.EXPENSE]: { label: "Despesa", color: "E93030" },
   [TransactionType.INVESTMENT]: { label: "Investimento", color: "#FFFFFF" },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface TransactionChartProps {
   depositsTotal: number;
@@ -30,23 +27,30 @@ interface TransactionChartProps {
   typesPercentage: TransactionPercentage;
 }
 
-export function TransactionChart({ depositsTotal, investmentsTotal, expensesTotal, typesPercentage }: TransactionChartProps) {
-  const chartData = [{
-    type: TransactionType.DEPOSIT,
-    amount: depositsTotal,
-    fill: "#55B02E",
-  }, 
-  {
-    type: TransactionType.INVESTMENT,
-    amount: investmentsTotal,
-    fill: "#FFFFFF",
-  }, 
-  {
-    type: TransactionType.EXPENSE,
-    amount: expensesTotal,
-    fill: "#E93030",
-  }]
-  
+export function TransactionChart({
+  depositsTotal,
+  investmentsTotal,
+  expensesTotal,
+  typesPercentage,
+}: TransactionChartProps) {
+  const chartData = [
+    {
+      type: TransactionType.DEPOSIT,
+      amount: depositsTotal,
+      fill: "#55B02E",
+    },
+    {
+      type: TransactionType.INVESTMENT,
+      amount: investmentsTotal,
+      fill: "#3B82F6",
+    },
+    {
+      type: TransactionType.EXPENSE,
+      amount: expensesTotal,
+      fill: "#E93030",
+    },
+  ];
+
   return (
     <Card className="flex flex-col p-12">
       <CardContent className="flex-1 pb-0">
@@ -67,7 +71,7 @@ export function TransactionChart({ depositsTotal, investmentsTotal, expensesTota
             />
           </PieChart>
         </ChartContainer>
-        
+
         <div className="space-y-3">
           <PercentageItem
             icon={<TrendingUpIcon size={16} className="text-green-500" />}
@@ -80,12 +84,12 @@ export function TransactionChart({ depositsTotal, investmentsTotal, expensesTota
             value={typesPercentage[TransactionType.EXPENSE]}
           />
           <PercentageItem
-            icon={<PiggyBankIcon size={16} />}
+            icon={<PiggyBankIcon size={16} className="text-blue-500" />}
             title="Investido"
             value={typesPercentage[TransactionType.INVESTMENT]}
           />
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

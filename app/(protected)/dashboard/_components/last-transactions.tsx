@@ -34,7 +34,7 @@ export default function LastTransactions({
     <ScrollArea className="rounded-md border">
       <CardHeader className="flex flex-row items-center justify-between p-6">
         <CardTitle className="font-bold">Últimas Transações</CardTitle>
-        <Button variant="outline" className="rounded-full font-bold" asChild>
+        <Button className="rounded-full font-bold" asChild>
           <Link href="/transactions">Ver mais</Link>
         </Button>
       </CardHeader>
@@ -56,7 +56,7 @@ export default function LastTransactions({
               </div>
               <div>
                 <p className="text-sm font-bold">{transaction.name}</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   {new Date(transaction.date).toLocaleDateString("pt-BR", {
                     day: "2-digit",
                     month: "short",
@@ -74,4 +74,4 @@ export default function LastTransactions({
       </CardContent>
     </ScrollArea>
   );
-};
+}
