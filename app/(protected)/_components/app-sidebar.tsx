@@ -70,7 +70,9 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="border-b p-4">
-        <Image src="/logo.svg" alt="Batata Wallet" width={140} height={28} />
+        <div className="px-2 py-2">
+          <span className="font-bold text-2xl text-primary">Batata Wallet</span>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
